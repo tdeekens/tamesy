@@ -1,6 +1,6 @@
 {
   "name": "tamesy",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Tames a set of wild concurrent promises",
   "main": "src/index.js",
   "scripts": {
