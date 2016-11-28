@@ -13,12 +13,13 @@ function queue(length, max) {
 
 const log = debug('tamesy')
 
-const asyncQueue = queue(10, 50).map(ms => () => delay(ms))
+const syncQueue = queue(10, 50)
+const asyncQueue = syncQueue.map(ms => () => delay(ms))
 
 console.huraaay = (msg, props) => console.info(`🎉 ${msg} 🍻`, props)
 
 console.info('🏁 Starting the race 1...')
-map(asyncQueue, 2, false, log).then(props => console.huraaay('All work WITHOUT iterator done! ', props))
+map(asyncQueue, 2, false, null, log).then(props => console.huraaay('All work WITHOUT iterator done! ', props))
 
 console.info('🏁 Starting the race 2...')
-map(asyncQueue, 2, delay, log).then(props => console.huraaay('All work WITH iterator done! ', props))
+map(syncQueue, 2, delay, null, log).then(props => console.huraaay('All work WITH iterator done! ', props))

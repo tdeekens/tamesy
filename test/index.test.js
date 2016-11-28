@@ -35,6 +35,16 @@ test('invokes the iterator with each item in a sync queue', t => {
     })
 })
 
+test('uses the passed in promise providing function to build the chain', t => {
+    const queue = getQueue(10, 5)
+    const asyncQueue = queue.map(ms => () => delay(ms))
+    const getPromise = sinon.spy(fn => new Promise(fn))
+
+    return map(asyncQueue, Infinity, undefined, getPromise).then(() => {
+        t.equal(getPromise.callCount, 1)
+    })
+})
+
 test('does not surpass the concurrency limit', t => {
     let inFlight = 0
     let concurrency = 2

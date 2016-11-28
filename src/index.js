@@ -9,14 +9,17 @@
  * @param  {Number} [concurrency=Infinity] [maximum limit of concurrently running Promises]
  * @param  {Function} iterator             [if passed a function invoked with each item which should return a Promise]
  * @param  {Function} log                  [if passed a function to be used for debugging]
+ * @param  {Function} getPromise           [if passed a function providing a Promise (to overwrite native Promises)]
  * @return {[any]}                         [list of any in order of resolved items]
  */
-function map(iterable, concurrency = Infinity, iterator, log = () => {}) {
+// eslint-disable-next-line max-params
+function map(iterable, concurrency = Infinity, iterator, getPromise, log = () => {}) {
     const extract = (item, iterator) => (typeof item === 'function') ? item() : iterator(item)
+    const chain = fn => (typeof getPromise === 'function') ? getPromise(fn) : new Promise(fn)
 
     log(`map() Starting with iterable of ${iterable.length} in concurrency of ${concurrency}.`)
 
-    return new Promise((resolve, reject) => {
+    return chain((resolve, reject) => {
         let running = 0
         let aborted = false
         let resolutions = []

@@ -38,15 +38,17 @@ function queue(length, max) {
 }
 
 // Queue map'ed onto delay factories (lazy Promises)
-const asyncQueue = queue(10, 50).map(ms => () => delay(ms))
+const syncQueue = queue(10, 50)
+const asyncQueue = syncQueue.map(ms => () => delay(ms))
 
-// More glitter!
-console.huraaay = msg => console.info(`🎉 ${msg} 🍻`)
+console.huraaay = (msg, props) => console.info(`🎉 ${msg} 🍻`, props)
 
+console.info('🏁 Starting the race 1...')
 // Given a queue with 10 items and a maximum delay of 50ms
 // execute two tasks concurrently without a factory function.
-map(asyncQueue, 2).then(() => console.huraaay('All work done!'))
+map(asyncQueue, 2, false, null, log).then(props => console.huraaay('All work WITHOUT iterator done! ', props))
 
+console.info('🏁 Starting the race 2...')
 // Given the same queue pipe each item of the iterable into the factory function.
-map(asyncQueue, 2, delay).then(() => console.huraaay('All work done!'))
+map(syncQueue, 2, delay, null, log).then(props => console.huraaay('All work WITH iterator done! ', props))
 ```

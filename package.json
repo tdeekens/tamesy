@@ -14,6 +14,11 @@
     "build:umd:min": "webpack",
     "preversion": "npm run build"
   },
+  "files": [
+    "readme.md",
+    "src/index.js",
+    "build/"
+  ],
   "pre-commit": [
     "lint",
     "test"
