@@ -17,7 +17,7 @@
   "files": [
     "readme.md",
     "src/index.js",
-    "build/"
+    "dist/**"
   ],
   "pre-commit": [
     "lint",
