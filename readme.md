@@ -11,6 +11,18 @@
 
 Tamesy exposes a `map` function to map over a set of `Promises` or a `iterator` factory with a given concurrency.
 
+### API
+
+`Tamesy` exposes a `map` function as its default export. The `map` function takes the following arguments:
+
+ * [Function<Promise>] Array containing functions which return Promises serving as the factory (lazy).
+ * Number=Infinity     Maximum limit of concurrently running Promises.
+ * Function            Optional if passed a function invoked with each item which should return a Promise.
+ * Function            Optional log function if passed a function to be used for debugging (e.g. `debug` in examples).
+ * Function            Optional if passed a function providing a Promise (to overwrite native Promises e.g. `O.Promise`.
+
+`Tamesy` returns a Promise which resolves to an Array<Any> whenever all tasks have ben run. The order of items is maintained - same as in the list of factory functions passed.
+
 ### Examples
 
 ```js
