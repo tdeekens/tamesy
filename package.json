@@ -35,7 +35,13 @@
   "homepage": "https://github.com/tdeekens/tamesy#readme",
   "xo": {
     "semicolon": false,
-    "space": 4
+    "space": 2,
+    "rules": {
+      "object-curly-spacing": [2, "always", {
+        "arraysInObjects": false
+      }],
+      "arrow-parens": ["error", "always"]
+    }
   },
   "devDependencies": {
     "babel-core": "6.18.2",

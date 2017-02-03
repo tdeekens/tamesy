@@ -12,100 +12,101 @@
  * @param  {Function} getPromise           [if passed a function providing a Promise (to overwrite native Promises)]
  * @return {[any]}                         [list of any in order of resolved items]
  */
+
 // eslint-disable-next-line max-params
 function map(iterable, concurrency = Infinity, iterator, getPromise, log = () => {}) {
-    const extract = (item, iterator) => (typeof item === 'function') ? item() : iterator(item)
-    const chain = fn => (typeof getPromise === 'function') ? getPromise(fn) : new Promise(fn)
+  const extract = (item, iterator) => (typeof item === 'function') ? item() : iterator(item)
+  const chain = (fn) => (typeof getPromise === 'function') ? getPromise(fn) : new Promise(fn)
 
-    log(`map() Starting with iterable of ${iterable.length} in concurrency of ${concurrency}.`)
+  log(`map() Starting with iterable of ${iterable.length} in concurrency of ${concurrency}.`)
 
-    return chain((resolve, reject) => {
-        let running = 0
-        let aborted = false
-        let resolutions = []
+  return chain((resolve, reject) => {
+    let running = 0
+    let aborted = false
+    let resolutions = []
 
         /**
          * step steps, maintains running Promises and loops again
          */
-        function step() {
-            log('step() Iterator completed with success - continuing queue.')
+    function step() {
+      log('step() Iterator completed with success - continuing queue.')
 
-            running--
-            loop()
-        }
+      running--
+      loop()
+    }
 
         /**
          * Aborts, marks the whole chain as aborted and rejects the Promise
          */
-        function abort(err) {
-            log('abort() iterator had error - rejecting queue.', err)
+    function abort(err) {
+      log('abort() iterator had error - rejecting queue.', err)
 
-            aborted = true
-            reject(err)
-        }
+      aborted = true
+      reject(err)
+    }
 
         /**
          * Immedidiately invoked function returning an iterator (next, done)
          * to manage to iterable as a queue.
          */
-        const queue = (function () {
+    const queue = (() => {
             // To maintain correct indexes on resolved Promises
-            let idx = -1
+      let idx = -1
 
-            return {
+      return {
                 // Each returning an object on next() with value || done
-                next() {
-                    if (idx < iterable.length - 1) {
-                        return {value: iterable[++idx], idx}
-                    }
+        next() {
+          if (idx < iterable.length - 1) {
+            return { value: iterable[++idx], idx }
+          }
 
-                    return {done: true}
-                }
-            }
-        })()
+          return { done: true }
+        }
+      }
+    })()
 
         /**
          * The loop. Maintaining a the running Promises vs. concurrency limits
          * while walking the queue.
          */
-        function loop() {
-            if (aborted) {
-                return
-            }
+    function loop() {
+      if (aborted) {
+        return
+      }
 
-            while (running < concurrency) {
-                const next = queue.next()
+      while (running < concurrency) {
+        const next = queue.next()
 
-                if (next.done) {
-                    log('loop() Concurrent slice of queue done.')
+        if (next.done) {
+          log('loop() Concurrent slice of queue done.')
 
-                    if (running === 0) {
-                        log('loop() Complete queue is done.')
+          if (running === 0) {
+            log('loop() Complete queue is done.')
 
-                        resolve(resolutions)
+            resolve(resolutions)
 
-                        return
-                    }
-                    break
-                }
+            return
+          }
+          break
+        }
 
-                running++
+        running++
 
-                log('loop() Extracting onto iterator with value.')
+        log('loop() Extracting onto iterator with value.')
 
                 // Unboxes another value from the queue with either the iterator
                 // or directly
-                extract(next.value, iterator).then(resolvation => {
+        extract(next.value, iterator).then((resolvation) => {
                     // Store resolved value and step
-                    resolutions[next.idx] = resolvation
-                    step()
-                }, abort)
-            }
-        }
+          resolutions[next.idx] = resolvation
+          step()
+        }, abort)
+      }
+    }
 
         // Initial kicker against the loop
-        loop()
-    })
+    loop()
+  })
 }
 
 export default map
