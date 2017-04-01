@@ -21,13 +21,13 @@ function map(iterable, concurrency = Infinity, iterator, getPromise, log = () =>
   log(`map() Starting with iterable of ${iterable.length} in concurrency of ${concurrency}.`)
 
   return chain((resolve, reject) => {
+    const resolutions = []
     let running = 0
     let aborted = false
-    let resolutions = []
 
-        /**
-         * step steps, maintains running Promises and loops again
-         */
+    /**
+     * Step steps, maintains running Promises and loops again
+     */
     function step() {
       log('step() Iterator completed with success - continuing queue.')
 
@@ -35,9 +35,9 @@ function map(iterable, concurrency = Infinity, iterator, getPromise, log = () =>
       loop()
     }
 
-        /**
-         * Aborts, marks the whole chain as aborted and rejects the Promise
-         */
+    /**
+     * Aborts, marks the whole chain as aborted and rejects the Promise
+     */
     function abort(err) {
       log('abort() iterator had error - rejecting queue.', err)
 
@@ -45,16 +45,16 @@ function map(iterable, concurrency = Infinity, iterator, getPromise, log = () =>
       reject(err)
     }
 
-        /**
-         * Immedidiately invoked function returning an iterator (next, done)
-         * to manage to iterable as a queue.
-         */
+    /**
+     * Immedidiately invoked function returning an iterator (next, done)
+     * to manage to iterable as a queue.
+     */
     const queue = (() => {
-            // To maintain correct indexes on resolved Promises
+      // To maintain correct indexes on resolved Promises
       let idx = -1
 
       return {
-                // Each returning an object on next() with value || done
+        // Each returning an object on next() with value || done
         next() {
           if (idx < iterable.length - 1) {
             return { value: iterable[++idx], idx }
@@ -65,10 +65,10 @@ function map(iterable, concurrency = Infinity, iterator, getPromise, log = () =>
       }
     })()
 
-        /**
-         * The loop. Maintaining a the running Promises vs. concurrency limits
-         * while walking the queue.
-         */
+    /**
+     * The loop. Maintaining a the running Promises vs. concurrency limits
+     * while walking the queue.
+     */
     function loop() {
       if (aborted) {
         return
@@ -94,17 +94,16 @@ function map(iterable, concurrency = Infinity, iterator, getPromise, log = () =>
 
         log('loop() Extracting onto iterator with value.')
 
-                // Unboxes another value from the queue with either the iterator
-                // or directly
+        // Unboxes another value from the queue with either the iterator or directly
         extract(next.value, iterator).then((resolvation) => {
-                    // Store resolved value and step
+          // Store resolved value and step
           resolutions[next.idx] = resolvation
           step()
         }, abort)
       }
     }
 
-        // Initial kicker against the loop
+    // Initial kicker against the loop
     loop()
   })
 }

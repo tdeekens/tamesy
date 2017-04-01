@@ -5,19 +5,23 @@ const baseConfig = {
   devtool: 'eval',
   entry: paths.main,
   module: {
-    loaders: [{
+    rules: [{
       test: /\.js$/,
       include: /src/,
-      loaders: ['babel']
+      use: [{
+        loader: 'babel-loader',
+        options: {
+          presets: ['es2015']
+        }
+      }]
     }]
   },
   output: {
     filename: `${pkg.name}.js`
   },
   resolve: {
-    alias: { },
-    root: paths.root,
-    modulesDirectories: ['node_modules']
+    alias: {},
+    modules: ['node_modules']
   },
   plugins: []
 }

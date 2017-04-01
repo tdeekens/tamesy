@@ -46,8 +46,8 @@ test('uses the passed in promise providing function to build the chain', (t) => 
 })
 
 test('does not surpass the concurrency limit', (t) => {
+  const concurrency = 2
   let inFlight = 0
-  let concurrency = 2
   const queue = getQueue(10, 5)
   const iterator = sinon.spy(() => {
     inFlight++
@@ -62,12 +62,13 @@ test('does not surpass the concurrency limit', (t) => {
 })
 
 test('rejects queue on rejecting queue item', (t) => {
-  const queue = [Promise.resolve(2), Promise.resolve(3), Promise.reject('rejected'), Promise.resolve(23)]
+  const rejection = new Error('rejected')
+  const queue = [Promise.resolve(2), Promise.resolve(3), Promise.reject(rejection), Promise.resolve(23)]
   const asyncQueue = queue.map((item) => () => item)
 
   return map(asyncQueue, 3).then(() => {
     t.fail('Iterable with rejected promise should not resolve')
   }).catch((err) => {
-    t.equal(err, 'rejected')
+    t.equal(err, rejection)
   })
 })

@@ -1,5 +1,4 @@
 const merge = require('webpack-merge')
-const validate = require('webpack-validator')
 
 const baseConfig = require('./config/base')
 const umdConfig = require('./config/umd')
@@ -24,9 +23,4 @@ switch (target) {
     break
 }
 
-module.exports = validate(config, {
-  quiet: true,
-  rules: {
-    'no-root-files-node-modules-nameclash': false
-  }
-})
+module.exports = config
