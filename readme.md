@@ -1,5 +1,7 @@
 # tamesy
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/tdeekens/tamesy.svg)](https://greenkeeper.io/)
+
 [![npm version](https://badge.fury.io/js/tamesy.svg)](https://badge.fury.io/js/tamesy)
 [![Build Status](https://travis-ci.org/tdeekens/tamesy.svg?branch=master)](https://travis-ci.org/tdeekens/tamesy) ♦️
 [![Dependency Status](https://david-dm.org/tdeekens/tamesy.svg?style=flat)](https://david-dm.org/tdeekens/tamesy) ♦️
