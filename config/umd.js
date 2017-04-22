@@ -1,5 +1,5 @@
-const pkg = require('../package')
-const paths = require('./paths')
+const pkg = require('../package');
+const paths = require('./paths');
 
 const umdConfig = {
   devtool: 'source-map',
@@ -7,8 +7,8 @@ const umdConfig = {
     library: `${pkg.name}`,
     libraryTarget: 'umd',
     path: paths.distUmd,
-    umdNamedDefine: true
-  }
-}
+    umdNamedDefine: true,
+  },
+};
 
-module.exports = umdConfig
+module.exports = umdConfig;

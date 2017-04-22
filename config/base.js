@@ -1,29 +1,33 @@
-const pkg = require('../package')
-const paths = require('./paths')
+const pkg = require('../package');
+const paths = require('./paths');
 
 const baseConfig = {
   devtool: 'eval',
   entry: paths.main,
   module: {
-    rules: [{
-      test: /\.js$/,
-      include: /src/,
-      use: [{
-        loader: 'babel-loader',
-        options: {
-          presets: ['es2015']
-        }
-      }]
-    }]
+    rules: [
+      {
+        test: /\.js$/,
+        include: /src/,
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              presets: ['es2015'],
+            },
+          },
+        ],
+      },
+    ],
   },
   output: {
-    filename: `${pkg.name}.js`
+    filename: `${pkg.name}.js`,
   },
   resolve: {
     alias: {},
-    modules: ['node_modules']
+    modules: ['node_modules'],
   },
-  plugins: []
-}
+  plugins: [],
+};
 
-module.exports = baseConfig
+module.exports = baseConfig;

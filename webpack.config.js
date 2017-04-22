@@ -1,26 +1,26 @@
-const merge = require('webpack-merge')
+const merge = require('webpack-merge');
 
-const baseConfig = require('./config/base')
-const umdConfig = require('./config/umd')
-const umdMinConfig = require('./config/umd.min')
+const baseConfig = require('./config/base');
+const umdConfig = require('./config/umd');
+const umdMinConfig = require('./config/umd.min');
 
-const umd = merge(baseConfig, umdConfig)
-const umdMin = merge(umd, umdMinConfig)
+const umd = merge(baseConfig, umdConfig);
+const umdMin = merge(umd, umdMinConfig);
 
-const target = process.env.npm_lifecycle_event
+const target = process.env.npm_lifecycle_event;
 
-let config
+let config;
 
 switch (target) {
   case 'build:umd':
-    config = umd
-    break
+    config = umd;
+    break;
   case 'build:umd:min':
-    config = umdMin
-    break
+    config = umdMin;
+    break;
   default:
-    config = umd
-    break
+    config = umd;
+    break;
 }
 
-module.exports = config
+module.exports = config;

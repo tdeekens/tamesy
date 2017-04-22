@@ -14,35 +14,45 @@
  */
 
 // eslint-disable-next-line max-params
-function map(iterable, concurrency = Infinity, iterator, getPromise, log = () => {}) {
-  const extract = (item, iterator) => (typeof item === 'function') ? item() : iterator(item)
-  const chain = (fn) => (typeof getPromise === 'function') ? getPromise(fn) : new Promise(fn)
+function map(
+  iterable,
+  concurrency = Infinity,
+  iterator,
+  getPromise,
+  log = () => {}
+) {
+  const extract = (item, iterator) =>
+    (typeof item === 'function' ? item() : iterator(item));
+  const chain = fn =>
+    (typeof getPromise === 'function' ? getPromise(fn) : new Promise(fn));
 
-  log(`map() Starting with iterable of ${iterable.length} in concurrency of ${concurrency}.`)
+  log(
+    `map() Starting with iterable of ${iterable.length} in concurrency of ${concurrency}.`
+  );
 
   return chain((resolve, reject) => {
-    const resolutions = []
-    let running = 0
-    let aborted = false
+    const resolutions = [];
+    let running = 0;
+    let aborted = false;
 
     /**
      * Step steps, maintains running Promises and loops again
      */
     function step() {
-      log('step() Iterator completed with success - continuing queue.')
+      log('step() Iterator completed with success - continuing queue.');
 
-      running--
-      loop()
+      running--;
+      loop();
     }
 
     /**
      * Aborts, marks the whole chain as aborted and rejects the Promise
      */
     function abort(err) {
-      log('abort() iterator had error - rejecting queue.', err)
+      log('abort() iterator had error - rejecting queue.', err);
 
-      aborted = true
-      reject(err)
+      aborted = true;
+      reject(err);
     }
 
     /**
@@ -51,19 +61,19 @@ function map(iterable, concurrency = Infinity, iterator, getPromise, log = () =>
      */
     const queue = (() => {
       // To maintain correct indexes on resolved Promises
-      let idx = -1
+      let idx = -1;
 
       return {
         // Each returning an object on next() with value || done
         next() {
           if (idx < iterable.length - 1) {
-            return { value: iterable[++idx], idx }
+            return { value: iterable[++idx], idx };
           }
 
-          return { done: true }
-        }
-      }
-    })()
+          return { done: true };
+        },
+      };
+    })();
 
     /**
      * The loop. Maintaining a the running Promises vs. concurrency limits
@@ -71,41 +81,41 @@ function map(iterable, concurrency = Infinity, iterator, getPromise, log = () =>
      */
     function loop() {
       if (aborted) {
-        return
+        return;
       }
 
       while (running < concurrency) {
-        const next = queue.next()
+        const next = queue.next();
 
         if (next.done) {
-          log('loop() Concurrent slice of queue done.')
+          log('loop() Concurrent slice of queue done.');
 
           if (running === 0) {
-            log('loop() Complete queue is done.')
+            log('loop() Complete queue is done.');
 
-            resolve(resolutions)
+            resolve(resolutions);
 
-            return
+            return;
           }
-          break
+          break;
         }
 
-        running++
+        running++;
 
-        log('loop() Extracting onto iterator with value.')
+        log('loop() Extracting onto iterator with value.');
 
         // Unboxes another value from the queue with either the iterator or directly
-        extract(next.value, iterator).then((resolvation) => {
+        extract(next.value, iterator).then(resolvation => {
           // Store resolved value and step
-          resolutions[next.idx] = resolvation
-          step()
-        }, abort)
+          resolutions[next.idx] = resolvation;
+          step();
+        }, abort);
       }
     }
 
     // Initial kicker against the loop
-    loop()
-  })
+    loop();
+  });
 }
 
-export default map
+export default map;
