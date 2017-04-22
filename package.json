@@ -7,7 +7,7 @@
     "demo": "DEBUG=tamesy babel-watch demo/index.js",
     "format": "prettier --write --trailing-comma es5 --single-quote 'src/*.js' 'test/*.js' 'config/*.js' 'webpack.config.js' 'demo/*.js'",
     "lint": "xo",
-    "test": "tape -r babel-register test/**/*.test.js | tap-summary",
+    "test": "npm run lint && tape -r babel-register test/**/*.test.js | tap-summary",
     "test:watch": "NODE_PATH=. tape-watch -r babel-register test/**/*.test.js -o '| tap-summary'",
     "build": "npm run build:umd && npm run build:umd:min",
     "prebuild:umd": "rimraf dist/umd/**",
