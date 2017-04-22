@@ -5,6 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "demo": "DEBUG=tamesy babel-watch demo/index.js",
+    "format": "prettier --write --trailing-comma es5 --single-quote 'src/*.js' 'test/*.js' 'config/*.js' 'webpack.config.js' 'demo/*.js'",
     "lint": "xo",
     "test": "tape -r babel-register test/**/*.test.js | tap-summary",
     "test:watch": "NODE_PATH=. tape-watch -r babel-register test/**/*.test.js -o '| tap-summary'",
@@ -34,19 +35,21 @@
   },
   "homepage": "https://github.com/tdeekens/tamesy#readme",
   "xo": {
-    "semicolon": false,
+    "semicolon": true,
     "space": 2,
+    "extends": [
+      "prettier"
+    ],
+    "plugins": [
+      "prettier"
+    ],
     "rules": {
-      "object-curly-spacing": [
-        2,
-        "always",
-        {
-          "arraysInObjects": false
-        }
-      ],
-      "arrow-parens": [
+      "prettier/prettier": [
         "error",
-        "always"
+        {
+          "trailingComma": "es5",
+          "singleQuote": true
+        }
       ]
     }
   },
@@ -57,7 +60,10 @@
     "babel-register": "^6.24.0",
     "babel-watch": "^2.0.6",
     "debug": "^2.6.3",
+    "eslint-config-prettier": "^1.7.0",
+    "eslint-plugin-prettier": "^2.0.1",
     "pre-commit": "^1.2.2",
+    "prettier": "^1.2.2",
     "rimraf": "^2.6.1",
     "sinon": "^2.1.0",
     "tap-summary": "^3.0.2",
