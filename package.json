@@ -60,7 +60,7 @@
     "babel-register": "^6.24.0",
     "babel-watch": "^2.0.6",
     "debug": "^2.6.3",
-    "eslint-config-prettier": "^1.7.0",
+    "eslint-config-prettier": "^2.1.1",
     "eslint-plugin-prettier": "^2.0.1",
     "pre-commit": "^1.2.2",
     "prettier": "^1.2.2",
